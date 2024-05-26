@@ -85,10 +85,18 @@ const showAllBooks = (request, h) => {
       filteredBooks = filteredBooks.filter(book => book.finished === isFinished);
     }
 
-    return {
+    const response = h.response({
       status: 'success',
-      data: { books: filteredBooks }
-    };
+      data: {
+        books: filteredBooks.map(book => ({
+          id: book.id,
+          name: book.name,
+          publisher: book.publisher
+        }))
+      }
+    })
+    response.code(200)
+    return response
   };
 
 const showBookById = (request, h) => {
