@@ -52,10 +52,44 @@ const saveNewBook = (request, h) => {
   return response
 }
 
-const showAllBooks = () => ({
-  status: 'success',
-  data: { books }
-})
+const showAllBooks = (request, h) => {
+    const { name, reading, finished } = request.query;
+
+    let filteredBooks = books;
+
+    // Filter by name (case insensitive)
+    if (name) {
+      const lowerCaseName = name.toLowerCase();
+      filteredBooks = filteredBooks.filter(book => book.name.toLowerCase().includes(lowerCaseName));
+    }
+
+    // Filter by reading status
+    if (reading !== undefined) {
+      let isReading = reading === '1';
+      if(isReading == '1') {
+        isReading = true
+      }else {
+        isReading = false
+      }
+      filteredBooks = filteredBooks.filter(book => book.reading === isReading);
+    }
+
+    // Filter by finished status
+    if (finished !== undefined) {
+      let isFinished = finished === '1';
+      if(isFinished == '1') {
+        isFinished = true
+      }else {
+        isFinished = false
+      }
+      filteredBooks = filteredBooks.filter(book => book.finished === isFinished);
+    }
+
+    return {
+      status: 'success',
+      data: { books: filteredBooks }
+    };
+  };
 
 const showBookById = (request, h) => {
   const { bookId } = request.params
